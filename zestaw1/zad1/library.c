@@ -25,7 +25,7 @@ void set_dir(struct wrapped *arr, char *dir_name) { // Setting current directory
     }
     free(arr->current_dir);
     arr->current_dir = calloc(strlen(dir_name),sizeof(char));
-    arr->current_dir = dir_name;
+    strcpy(arr->current_dir,dir_name);
 }
 
 void set_file(struct wrapped *arr, char *file_name) { // Setting current file to search
@@ -36,7 +36,7 @@ void set_file(struct wrapped *arr, char *file_name) { // Setting current file to
     }
     free(arr->current_file);
     arr->current_file = calloc(strlen(file_name),sizeof(char));
-    arr->current_file = file_name;
+    strcpy(arr->current_file,file_name);
 }
 
 
