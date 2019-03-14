@@ -2,19 +2,15 @@ CC = gcc
 CFLAGS = -Wall -std=c99 -ggdb
 CNAME = library
 LIBNAME = searchlib
+FOLDERNAME = Libs
 
-all: static shared clear
+all: compile tests clean
 
-static:
-	$(CC) $(CFLAGS) main.c -o test_static -L./Libs ./Libs/libsearchlib.a
+compile:
+	$(CC) $(CFLAGS) main.c -o test -L./$(FOLDERNAME) -l$(LIBNAME) -Wl,-rpath=./$(FOLDERNAME)
 
-shared:
-	$(CC) $(CFLAGS) main.c -o test_shared -L./Libs -lsearchlib -Wl,-rpath=./Libs
-
-clear:
+tests:
+	./test --create 10 --dir /bin --searchf ss --temporaryf tmp.txt -f >> require2.txt
+clean:
 	rm -f *.o
-	#static
-	./test_static
-	#shared
-	./test_shared
-	rm test_*
+

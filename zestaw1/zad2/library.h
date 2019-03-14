@@ -5,7 +5,8 @@ struct wrapped{
     int number_of_blocks;
     char **blocks;
     char *current_dir;
-    char *current_file;
+    char *search_file;
+    char *temporary_file;
     int indicator;
 
 };
@@ -14,7 +15,10 @@ struct wrapped *create(int number_of_blocks);
 
 void set_dir(struct wrapped *arr, char* dir_name);
 
-void set_file(struct wrapped *arr, char* file_name);
+void set_search_file(struct wrapped *arr, char *file_name);
+
+void set_temporary_file(struct wrapped *arr, char *file_name);
+
 
 void execute_search(struct wrapped *arr);
 
