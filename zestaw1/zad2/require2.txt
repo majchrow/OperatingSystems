@@ -1,0 +1,18 @@
+Executing test: ./test  --create  10  --dir  /bin  --searchf  ss  --temporaryf  tmp.txt  -f Test done with the following results: 
+Real Time: 0.002000, User Time 0.000000, System Time 0.000000
+
+Executing test: ./test  --create  15  --dir  /  --searchf  passwd  --temporaryf  tmp2.txt  -f Test done with the following results: 
+Real Time: 2.044000, User Time 0.000000, System Time 0.000000
+
+Executing test: ./test  --create  10  --dir  /bin  --searchf  ss  --temporaryf  tmp.txt  -f 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.002000, User Time 0.000000, System Time 0.000000
+
+Executing test: ./test  --create  15  --dir  /  --searchf  passwd  --temporaryf  tmp2.txt  -f 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.010000, User Time 0.000000, System Time 0.000000
+

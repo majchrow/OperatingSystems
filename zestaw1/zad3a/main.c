@@ -6,7 +6,14 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include <dlfcn.h>
+
+#ifndef DLL
+
 #include "library.h"
+
+#endif
+
 
 #define AVERAGE_COUNT 5
 
@@ -53,7 +60,7 @@ void summary(struct test_time **tts) { // Counting average of all times calculat
     avg_real /= AVERAGE_COUNT;
     avg_system /= AVERAGE_COUNT;
     avg_user /= AVERAGE_COUNT;
-    printf("Test done with the following results: \nReal Time: %Lf, User Time %Lf, System Time %Lf\n\n", avg_real,
+    printf("Test done with the following results: \nReal Time: %Lf, User Time %Lf, System Time %Lf\n", avg_real,
            avg_user, avg_system);
 }
 
@@ -106,7 +113,7 @@ void (*execute_search)(struct wrapped*) = dlsym(handle, "execute_search");
     for (i = 0; i < argc; ++i) {
         printf(" %s ", argv[i]);
     }
-    printf("\nMaking %d tests and taking average of that.\n", AVERAGE_COUNT);
+    printf("\nMaking %d tests and taking average of that\n\n", AVERAGE_COUNT);
 
 
     for (test_number = 0; test_number <
@@ -168,6 +175,9 @@ void (*execute_search)(struct wrapped*) = dlsym(handle, "execute_search");
     summary(tts); // printing average times
     delete_tts(tts); // clearing tts array
 
+#ifdef DLL
+    dlclose(handle);
+#endif
     return 0;
 
 }

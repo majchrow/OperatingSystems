@@ -19,7 +19,6 @@ void set_search_file(struct wrapped *arr, char *file_name);
 
 void set_temporary_file(struct wrapped *arr, char *file_name);
 
-
 void execute_search(struct wrapped *arr);
 
 int add_block(struct wrapped *arr);

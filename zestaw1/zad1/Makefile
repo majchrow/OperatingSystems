@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -std=c99 -ggdb
+CFLAGS = -Wall -std=c99
 CNAME = library
 LIBNAME = searchlib
 

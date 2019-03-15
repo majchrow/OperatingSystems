@@ -1,0 +1,163 @@
+STARTING STATIC TESTS:
+
+
+Executing test: ./test  --create  2  --dir  /bin  --searchf  ss  --temporaryf  tmp.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.002000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  3  --dir  /  --searchf  passwd  --temporaryf  tmp2.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.160000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  2  --dir  /  --searchf  bin  --temporaryf  tmp3.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.032000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  2  --dir  /  --searchf  Findme  --temporaryf  tmp4.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.026000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp.txt  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp2.txt  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp3.txt  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp.txt  --add  --temporaryf  tmp2.txt  --add  --temporaryf  tmp3.txt  --add  --remove  0  --remove  1  --remove  2 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5000  --temporaryf  tmp.txt  --add  --temporaryf  tmp2.txt  --add  --temporaryf  tmp3.txt  --add  --add  --add  --add  --add  --add  --add  --add  --add  --add  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  1  --temporaryf  tmp4.txt  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+
+
+STARTING DYNAMIC-SHARED TESTS:
+
+
+Executing test: ./test  --create  2  --dir  /bin  --searchf  ss  --temporaryf  tmp.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.002000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  3  --dir  /  --searchf  passwd  --temporaryf  tmp2.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.020000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  2  --dir  /  --searchf  bin  --temporaryf  tmp3.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.094000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  2  --dir  /  --searchf  Findme  --temporaryf  tmp4.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.042000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp.txt  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp2.txt  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp3.txt  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp.txt  --add  --temporaryf  tmp2.txt  --add  --temporaryf  tmp3.txt  --add  --remove  0  --remove  1  --remove  2 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5000  --temporaryf  tmp.txt  --add  --temporaryf  tmp2.txt  --add  --temporaryf  tmp3.txt  --add  --add  --add  --add  --add  --add  --add  --add  --add  --add  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  1  --temporaryf  tmp4.txt  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+
+
+STARTING DYNAMIC-DLL TESTS:
+
+
+Executing test: ./test  --create  2  --dir  /bin  --searchf  ss  --temporaryf  tmp.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  3  --dir  /  --searchf  passwd  --temporaryf  tmp2.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.054000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  2  --dir  /  --searchf  bin  --temporaryf  tmp3.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.142000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  2  --dir  /  --searchf  Findme  --temporaryf  tmp4.txt  --find 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 2.258000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp.txt  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp2.txt  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp3.txt  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5  --temporaryf  tmp.txt  --add  --temporaryf  tmp2.txt  --add  --temporaryf  tmp3.txt  --add  --remove  0  --remove  1  --remove  2 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  5000  --temporaryf  tmp.txt  --add  --temporaryf  tmp2.txt  --add  --temporaryf  tmp3.txt  --add  --add  --add  --add  --add  --add  --add  --add  --add  --add  --add 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
+Executing test: ./test  --create  1  --temporaryf  tmp4.txt  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0  --add  --remove  0 
+Making 5 tests and taking average of that
+
+Test done with the following results: 
+Real Time: 0.000000, User Time 0.000000, System Time 0.000000
