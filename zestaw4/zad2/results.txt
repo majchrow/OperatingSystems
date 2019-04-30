@@ -1,0 +1,14 @@
+PID 25868 IS WATCHING FILE test1 
+PID 25869 IS WATCHING FILE test2 
+PID 25870 IS WATCHING FILE test3 
+PID 25868 IS WATCHING FILE test1 
+PID 25869 IS WATCHING FILE test2 
+PID 25870 IS WATCHING FILE test3 
+PID 25868 IS WATCHING FILE test1 
+PID 25869 IS WATCHING FILE test2 
+PID 25870 IS WATCHING FILE test3 
+Process 25868 created 0 number of copies
+Process 25869 created 0 number of copies
+Process 25870 created 0 number of copies
+
+No copies created cuz, we didn't wait enough time before terminating main process
