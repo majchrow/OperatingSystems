@@ -12,100 +12,72 @@
 
 char *parsed[MAX_PIPES][MAX_ARGS];
 
-
 int parse_row(char *pre_string) {
-    char post_string[strlen(pre_string) + 1];
 
-    int i;
-    post_string[0] = pre_string[0];
-    int j = 1;
-    for (i = 1; i < strlen(pre_string); ++i) {
-        if (!(pre_string[i] == ' ' && (pre_string[i - 1] == '|' || pre_string[i + 1] == '|')) &&
-            pre_string[i] != '\n') {
-            post_string[j++] = pre_string[i];
+    char *tmp_arr[MAX_PIPES];
+    char *tmp;
+    int pipes = 0;
+    if((tmp = strtok(pre_string, "|"))){
+        tmp_arr[pipes] = tmp;
+    }
+
+    for(pipes = 1, tmp = strtok(NULL, "|"); pipes < MAX_PIPES && tmp; ++pipes, tmp = strtok(NULL, "|")){
+        tmp_arr[pipes] = tmp;
+    }
+
+    if (pipes < MIN_PIPES) {
+        fprintf(stderr, "Expected at least %d pipes in line: \n%s", MIN_PIPES, pre_string);
+        _exit(EXIT_FAILURE);
+    }
+
+    for(int i = 0; i < pipes; ++i){
+        tmp = strtok(tmp_arr[i], " ");
+        int j = -1;
+        parsed[i][++j] =  tmp;
+        while((tmp = strtok(NULL, " "))){
+            parsed[i][++j] = tmp;
         }
+        parsed[i][++j] = NULL;
     }
 
-    // post_string is ready, all the unnecessary white spaces was deleted, as well as \n sign
-    int row_counter = 0;
-    int args_counter;
-    char *between;
-    char *args;
-    char *to_process[MAX_PIPES];
-    between = strtok(post_string, "|");
-
-    while (between != NULL) {
-        to_process[row_counter] = between;
-        between = strtok(NULL, "|");
-        ++row_counter;
-    }
-
-    for (int row = 0; row < row_counter; ++row) {
-        args = strtok(to_process[row], " ");
-        args_counter = 0;
-        while (args != NULL) {
-            parsed[row][args_counter] = args;
-            args = strtok(NULL, " ");
-            ++args_counter;
-        }
-        parsed[row][args_counter] = NULL;
-    }
-    parsed[row_counter][0] = NULL;
-    return row_counter;
+    return pipes;
 }
 
-
 int process_line(char *line) {
-    int pipes = parse_row(line);
-    if (pipes < MIN_PIPES) {
-        fprintf(stderr, "Expected at least %d pipes in line: \n%s", MIN_PIPES, line);
-        _exit(EXIT_FAILURE);
-    }
-
-    int current_descriptor[2];
-    int previous_descriptor[2];
-    if (pipe(current_descriptor) == -1) {
-        fprintf(stderr, "Failed to create pipes \n");
-        _exit(EXIT_FAILURE);
-    }
-
-    int iterator, status;
-    for (iterator = 0; iterator < pipes ; iterator++) {
-        pid_t pid = fork();
-        if (pid < 0) {
-            fprintf(stderr, "Failed to create fork \n");
-            _exit(EXIT_FAILURE);
+    int pipes_number = parse_row(line);
+    int pipes[2][2];
+    int iterator;
+    for(iterator = 0; iterator < pipes_number; ++iterator) {
+        if(iterator > 1) {
+            close(pipes[iterator%2][0]);
+            close(pipes[iterator%2][1]);
         }
-        if (pid == 0) { // child
-
-            if (iterator > 0) {
-                dup2(previous_descriptor[0], STDOUT_FILENO);
-                close(previous_descriptor[1]);
-                close(previous_descriptor[0]);
+        pipe(pipes[iterator%2]);
+        int pid = fork();
+        if(pid == 0) { // child
+            if(iterator != pipes_number - 1) {
+                close(pipes[iterator%2][0]);
+                dup2(pipes[iterator%2][1], 1);
+                close(pipes[iterator%2][1]);
             }
-            if (iterator < pipes) {
-                dup2(current_descriptor[1], STDIN_FILENO);
-                close(current_descriptor[0]);
-                close(current_descriptor[1]);
+            if(iterator != 0) {
+                close(pipes[1 - iterator%2][1]);
+                dup2(pipes[1 - iterator%2][0], 0);
+                close(pipes[1 - iterator%2][0]);
             }
             execvp(parsed[iterator][0], parsed[iterator]);
-            _exit(127);
-        } else { // parent
-            waitpid(pid, &status, 0);
-            if (iterator > 0) {
-                close(previous_descriptor[0]);
-                close(previous_descriptor[1]);
-            }
-            if (iterator < pipes) {
-                previous_descriptor[0] = current_descriptor[0];
-                previous_descriptor[1] = current_descriptor[1];
-            }
         }
+    }
+
+    close(pipes[iterator%2][0]);
+    close(pipes[iterator%2][1]);
+
+    for(int i = 0; i < pipes_number; ++i){
+        wait(NULL);
     }
 
     return 0;
 }
-
 
 int interpreter(char *path) {
     FILE *fp;
@@ -117,9 +89,10 @@ int interpreter(char *path) {
     int line_counter = 0;
 
     while (line_counter < MAX_LINES && fgets(line, sizeof(line), fp)) {
-        printf("Starting to process to process line:\n%s", line);
-        if (process_line(line)) {
-            fprintf(stderr, "Failed processing line: \n%s", line);
+        char* tmp = strtok(line, "\n"); // remove \n if there exists one
+        printf("Starting to process to process line: %s\n", tmp);
+        if (process_line(tmp)) {
+            fprintf(stderr, "Failed processing line: %s\n", tmp);
             _exit(EXIT_FAILURE);
         }
         line_counter++;
@@ -127,7 +100,6 @@ int interpreter(char *path) {
     fclose(fp);
     return 0;
 }
-
 
 int main(int argc, char *argv[]) {
     char usage[MAX_PATH];
