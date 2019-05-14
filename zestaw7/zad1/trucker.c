@@ -16,7 +16,7 @@ struct belt_info{
     int size; // max_size of the queue
     int capacity; // max capacity of the queue
     int pack_num; // current size of the queue
-    int pack_cap; // current ca[acity of the queue
+    int pack_cap; // current capacity of the queue
 };
 
 int main(int argc, char *argv[]) {
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     }
 
 
-    struct package last_pack; // last weight poped from the queue;
+    struct package last_pack; // last weight popped from the queue;
     struct sembuf wait_belt =     {.sem_num = UF_SIZE,  .sem_op = -1,         .sem_flg = 0}; // get package from the belt if there is any
     struct sembuf truck_unload =  {.sem_num = OF_TRUCK, .sem_op = truck_size, .sem_flg = 0}; // signal to workers that truck has arrived
     struct sembuf release_belt[2] = { // signal to workers that we freed up 1 package with popped weight from belt
@@ -75,7 +75,7 @@ int init(int argc, char *argv[]) {
         fprintf(stderr, "Trucker: Wrong number of parameters\n%s", usage);
         exit(EXIT_FAILURE);
     }
-    //int truck_size,  // maximum truck weight (this shouldn't be global)
+
     int belt_size,     // maximum number of packages in the belt
         belt_capacity; // maximum belt weight
 

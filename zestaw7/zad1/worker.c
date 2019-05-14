@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 
     int semaphores = semget(semaphore_key, 0, 0); // getting shared semaphores
 
-    // prepering semaphore operations
+    // preparing semaphore operations
 
    struct sembuf notify_belt =     {.sem_num = UF_SIZE, .sem_op = 1, .sem_flg = 0}; // notify trucker that package was put into the belt and can be taken
     struct sembuf push_belt[3] = { // pushing package to the belt if there is (!all three at the same time!) truck_size/belt_size/belt_size available in the belt
@@ -61,9 +61,9 @@ int main(int argc, char* argv[]) {
 
 void cleanup(){
     if(belt){
-        printf("Loader: Performing cleanup, detaching shared memory\n");
+        printf("Worker_pid_%d: Performing cleanup, detaching shared memory\n", getpid());
         if(shmdt(belt) == -1){ //detach from shared memory
-            fprintf(stderr, "Loader: Failed to detach from shared memory\n");
+            fprintf(stderr, "Worker_pid_%d:Failed to detach from shared memory\n", getpid());
             exit(EXIT_FAILURE);
         }
     }

@@ -22,5 +22,5 @@ tests:	# there is no sleep in any synchronized process, so the output may be con
 clean:
 	killall -SIGINT $(TRUCKER_OUT)  # clean up the trucker process(signal + atexit), because there is infinite loop for trucker arrival
 	sleep 1 # don't kill workers before trucker cleanup is done
-	killall $(WORKER_OUT) # number of cycles for workers was set up to infinite, so we need to kill it by hand / no need to kill loader, because there it will be closed when all child-workers dies
+	killall $(WORKER_OUT) # number of cycles for workers was set up to infinite, so we need to kill it by hand
 	rm *.out 

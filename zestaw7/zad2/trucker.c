@@ -198,10 +198,10 @@ void pop_and_load(){
     belt->pack_cap -= pack.weight;
     belt->pack_num --;
 
-    // load to the truct
+    // load to the truck
     belt->truck_curr += pack.weight;
 
-    //print info about popped and loaded package
+    // print info about popped and loaded package
     printf("Trucker: Load: worker_pid=%d, package_weight=%d, time_diff=%ld, truck_size_left=%d, truck_size_loaded=%d, queue_size_left=%d, queue_size_loaded=%d, queue_cap_left=%d, queue_cap_loaded=%d\n",
            pack.pid, pack.weight, (get_time() - pack.time), belt->truck_size - belt->truck_curr, belt->truck_curr,
            (belt->size - belt->pack_num), belt->pack_num,
