@@ -1,0 +1,58 @@
+STARTING TESTING
+Filtering done, results: with c=03, threads=1, mode=block      , time=0.083331 seconds
+Filtering done, results: with c=03, threads=1, mode=interleaved, time=0.082475 seconds
+Filtering done, results: with c=10, threads=1, mode=block      , time=0.891679 seconds
+Filtering done, results: with c=10, threads=1, mode=interleaved, time=0.892261 seconds
+Filtering done, results: with c=20, threads=1, mode=block      , time=3.492551 seconds
+Filtering done, results: with c=20, threads=1, mode=interleaved, time=3.448831 seconds
+Filtering done, results: with c=26, threads=1, mode=block      , time=5.834108 seconds
+Filtering done, results: with c=26, threads=1, mode=interleaved, time=5.835787 seconds
+Filtering done, results: with c=39, threads=1, mode=block      , time=13.095275 seconds
+Filtering done, results: with c=39, threads=1, mode=interleaved, time=13.090116 seconds
+Filtering done, results: with c=48, threads=1, mode=block      , time=19.798215 seconds
+Filtering done, results: with c=48, threads=1, mode=interleaved, time=19.846058 seconds
+Filtering done, results: with c=65, threads=1, mode=block      , time=36.358118 seconds
+Filtering done, results: with c=65, threads=1, mode=interleaved, time=36.325193 seconds
+Filtering done, results: with c=03, threads=2, mode=block      , time=0.041383 seconds
+Filtering done, results: with c=03, threads=2, mode=interleaved, time=0.042420 seconds
+Filtering done, results: with c=10, threads=2, mode=block      , time=0.459544 seconds
+Filtering done, results: with c=10, threads=2, mode=interleaved, time=0.459952 seconds
+Filtering done, results: with c=20, threads=2, mode=block      , time=1.829609 seconds
+Filtering done, results: with c=20, threads=2, mode=interleaved, time=1.818855 seconds
+Filtering done, results: with c=26, threads=2, mode=block      , time=3.086801 seconds
+Filtering done, results: with c=26, threads=2, mode=interleaved, time=3.082482 seconds
+Filtering done, results: with c=39, threads=2, mode=block      , time=6.945176 seconds
+Filtering done, results: with c=39, threads=2, mode=interleaved, time=6.893640 seconds
+Filtering done, results: with c=48, threads=2, mode=block      , time=10.508051 seconds
+Filtering done, results: with c=48, threads=2, mode=interleaved, time=10.478065 seconds
+Filtering done, results: with c=65, threads=2, mode=block      , time=19.299707 seconds
+Filtering done, results: with c=65, threads=2, mode=interleaved, time=19.234320 seconds
+Filtering done, results: with c=03, threads=4, mode=block      , time=0.023195 seconds
+Filtering done, results: with c=03, threads=4, mode=interleaved, time=0.023542 seconds
+Filtering done, results: with c=10, threads=4, mode=block      , time=0.238509 seconds
+Filtering done, results: with c=10, threads=4, mode=interleaved, time=0.239796 seconds
+Filtering done, results: with c=20, threads=4, mode=block      , time=0.949943 seconds
+Filtering done, results: with c=20, threads=4, mode=interleaved, time=0.949746 seconds
+Filtering done, results: with c=26, threads=4, mode=block      , time=1.608286 seconds
+Filtering done, results: with c=26, threads=4, mode=interleaved, time=1.600941 seconds
+Filtering done, results: with c=39, threads=4, mode=block      , time=3.613099 seconds
+Filtering done, results: with c=39, threads=4, mode=interleaved, time=3.598342 seconds
+Filtering done, results: with c=48, threads=4, mode=block      , time=5.470969 seconds
+Filtering done, results: with c=48, threads=4, mode=interleaved, time=5.445459 seconds
+Filtering done, results: with c=65, threads=4, mode=block      , time=10.035201 seconds
+Filtering done, results: with c=65, threads=4, mode=interleaved, time=9.965781 seconds
+Filtering done, results: with c=03, threads=8, mode=block      , time=0.013901 seconds
+Filtering done, results: with c=03, threads=8, mode=interleaved, time=0.015444 seconds
+Filtering done, results: with c=10, threads=8, mode=block      , time=0.131194 seconds
+Filtering done, results: with c=10, threads=8, mode=interleaved, time=0.127543 seconds
+Filtering done, results: with c=20, threads=8, mode=block      , time=0.493970 seconds
+Filtering done, results: with c=20, threads=8, mode=interleaved, time=0.494418 seconds
+Filtering done, results: with c=26, threads=8, mode=block      , time=0.839493 seconds
+Filtering done, results: with c=26, threads=8, mode=interleaved, time=0.838313 seconds
+Filtering done, results: with c=39, threads=8, mode=block      , time=1.877621 seconds
+Filtering done, results: with c=39, threads=8, mode=interleaved, time=1.874487 seconds
+Filtering done, results: with c=48, threads=8, mode=block      , time=2.846474 seconds
+Filtering done, results: with c=48, threads=8, mode=interleaved, time=2.856221 seconds
+Filtering done, results: with c=65, threads=8, mode=block      , time=5.381637 seconds
+Filtering done, results: with c=65, threads=8, mode=interleaved, time=5.246972 seconds
+ALL TESTS DONE
