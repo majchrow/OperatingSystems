@@ -474,5 +474,5 @@ int check_exist(char* client_name){
             return i;
         }
     }
-    return 0;
+    return -1;
 }
