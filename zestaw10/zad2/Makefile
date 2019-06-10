@@ -16,9 +16,7 @@ compile:
 
 tests:	
 	./$(CLIENT_OUT) WebSlave Web 127.0.0.1 8080 & 		# (Client Name) (Web) (IPv4) (Port) 
-	./$(CLIENT_OUT) LocalSlave Local local_path &		# (Client Name) (Local) (UNIX Path)
 	./$(CLIENT_OUT) WebSlave2 Web 127.0.0.1 8080 & 		# (Client Name) (Web) (IPv4) (Port) 
-	./$(CLIENT_OUT) Local2 Local local_path &		# (Client Name) (Local) (UNIX Path)
 	sleep 20
 
 clean:

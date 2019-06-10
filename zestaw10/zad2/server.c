@@ -18,10 +18,8 @@ void exit_handler();
 void *ping_routine(void *arg);
 void *terminal_routine(void *arg);
 int read_file(char* filename, char *result);
-void send_request(int type, int len, struct request req, int i);
-void handle_connection(int fd);
 void handle_response(int fd);
-void handle_register(int fd, char* client_name);
+void handle_register(int fd, struct message msg,  struct sockaddr *sockaddr, socklen_t socklen);
 void handle_unregister(int fd, char* client_name);
 void clear_poll(int fd);
 int check_exist(char* client_name);
@@ -42,12 +40,7 @@ int main(int argc, char *argv[])
         printf("Server: %d ready events\n", event_count);
         for(int cur_event = 0; cur_event < event_count; ++cur_event){
             printf("Server: Processing event nr %d\n", cur_event + 1);
-            if (events[cur_event].data.fd < 0){
-                handle_connection(-events[cur_event].data.fd);
-            }
-            else{
-                handle_response(events[cur_event].data.fd);
-            }
+            handle_response(events[cur_event].data.fd);
         }
     }
 }
@@ -98,12 +91,12 @@ void init(int argc, char *argv[]){
     }
 
     // web + local sockets initialization
-    if((web_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0){ // IPv4 + Stream
+    if((web_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0){ // IPv4 + DGRAM
         fprintf(stderr, "Server: Failed to create web socket\n");
         exit(EXIT_FAILURE);
     }
 
-    if((local_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){ // Local + Stream
+    if((local_fd = socket(AF_UNIX, SOCK_DGRAM, 0)) < 0){ // Local + DGRAM
         fprintf(stderr, "Server: Failed to create local socket\n");
         exit(EXIT_FAILURE);
     }
@@ -118,16 +111,6 @@ void init(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
-    if((listen(web_fd, MAX_CLIENTS)) < 0 ){
-        fprintf(stderr, "Server: Failed to listen on web socket\n");
-        exit(EXIT_FAILURE);
-    }
-
-    if((listen(local_fd, MAX_CLIENTS)) < 0 ){
-        fprintf(stderr, "Server: Failed to listen on local socket\n");
-        exit(EXIT_FAILURE);
-    }
-
     struct epoll_event event;
     event.events = EPOLLIN | EPOLLPRI;
 
@@ -136,16 +119,14 @@ void init(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
-    // descriptors < 0 means that clients are not initialized yet!
-
-    event.data.fd = -web_fd;
+    event.data.fd = web_fd;
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, web_fd, &event) == -1){
         fprintf(stderr, "Server: Failed to add web descriptor to the poll\n");
         exit(EXIT_FAILURE);
     }
 
 
-    event.data.fd = -local_fd;
+    event.data.fd = local_fd;
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, local_fd, &event) == -1){
         fprintf(stderr, "Server: Failed to add local descriptor\n");
         exit(EXIT_FAILURE);
@@ -175,18 +156,12 @@ void clean_server(){
         pthread_cancel(terminal_thread);
     }
 
-    if(shutdown(web_fd, SHUT_RDWR) == -1){
-        fprintf(stderr, "Server: Failed to shutdown web socket\n");
-    }
-
-    if(close(web_fd) == -1){
-        fprintf(stderr, "Server: Failed to close web socket\n");
-    }
-
     if(shutdown(local_fd, SHUT_RDWR)  == -1){
         fprintf(stderr, "Server: Failed to shutdown local socket\n");
     }
 
+    close(web_fd);
+    shutdown(web_fd, SHUT_RDWR);
     if(close(local_fd) == -1){
         fprintf(stderr, "Server: Failed to close local socket\n");
     }
@@ -221,7 +196,7 @@ void *ping_routine(void *arg){
                 --i;
             } else {
                 printf("Server-ping: Pinging client %s...\n", clients[i].client_name);
-                if (write(clients[i].client_fd, &tag, TAG) != TAG){
+                if (sendto(clients[i].client_fd, &tag, 1, 0, clients[i].sockaddr, clients[i].socklen) != 1){
                     fprintf(stderr, "Server-ping: Failed to ping client %s\n", clients[i].client_name);
                     continue;
                 }
@@ -235,7 +210,7 @@ void *ping_routine(void *arg){
 
 void *terminal_routine(void *arg){
     char buffer[MAX_PATH];
-
+    enum msg_types msg_type = REQUEST;
     while(TRUE){
         printf("Server-terminal: Provide file name: ");
         fgets(buffer, MAX_PATH, stdin);
@@ -262,30 +237,25 @@ void *terminal_routine(void *arg){
                 break;
             }
         }
-        printf("Server: Request has been sent to %s\n", clients[i].client_name);
         if(busy){ // all clients are working choose the random one
             i = rand() % curr_clients;
         }
+
         clients[i].reserved++;
-        send_request(REQUEST, sizeof(struct request), req, i);
+
+        if (sendto(clients[i].client_fd, &msg_type, TAG, 0, clients[i].sockaddr, clients[i].socklen) != TAG) {
+            fprintf(stderr, "Server: Failed to send request TAG\n");
+            exit(EXIT_FAILURE);
+        }
+
+        if (sendto(clients[i].client_fd, &req, sizeof(req), 0, clients[i].sockaddr, clients[i].socklen) != sizeof(req)) {
+            fprintf(stderr, "Server: Failed to send request\n");
+            exit(EXIT_FAILURE);
+        }
+        printf("Server: Request has been sent to %s\n", clients[i].client_name);
+
     }
 }
-
-void send_request(int type, int len, struct request req, int i) {
-    if (write(clients[i].client_fd, &type, TAG) != TAG) {
-        fprintf(stderr, "Server: Failed to send request TAG\n");
-        exit(EXIT_FAILURE);
-    }
-    if (write(clients[i].client_fd, &len, LENGTH) != LENGTH) {
-        fprintf(stderr, "Server: Failed to send request length\n");
-        exit(EXIT_FAILURE);
-    }
-    if (write(clients[i].client_fd, &req, len) != len) {
-        fprintf(stderr, "Server: Failed to send request content\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
 int read_file(char* filename, char* result){ // read content from filename and copy it into result (result memory must be allocated)
     FILE *fp = fopen(filename, "rb");
     if (!fp) {
@@ -319,90 +289,41 @@ int read_file(char* filename, char* result){ // read content from filename and c
     return 0;
 }
 
-void handle_connection(int fd){
-    printf("Server: Handling connection from client...\n");
-    int client = accept(fd, NULL, NULL);
-    if (client == -1){
-        fprintf(stderr, "Server: Failed to accept new client\n");
-        exit(EXIT_FAILURE);
-    }
-
-    struct epoll_event event;
-    event.events = EPOLLIN | EPOLLPRI;
-    event.data.fd = client;
-
-    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client, &event) == -1){
-        fprintf(stderr, "Server: Failed to add new client to the epoll\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
 void handle_response(int fd){
     printf("Server: Handling response from client...\n");
+    struct sockaddr *addr = calloc(1, sizeof(struct sockaddr));
+    socklen_t len = sizeof(addr);
+    struct message msg;
 
-    uint8_t tag;
-    uint16_t length;
-
-    if (read(fd, &tag, TAG) != TAG){
-        fprintf(stderr, "Server: Failed to read tag from message\n");
+    if (recvfrom(fd, &msg, sizeof(struct message), 0, addr, &len) != sizeof(msg)){
+        fprintf(stderr, "Server: Failed to receive message from client\n");
         exit(EXIT_FAILURE);
     }
-    if (read(fd, &length, LENGTH) != LENGTH){
-        fprintf(stderr, "Server: Failed to read length from message\n");
-        exit(EXIT_FAILURE);
-    }
-    char client_name[10];
 
-    switch (tag){
+    switch (msg.type){
         case REGISTER:
-            if (read(fd, client_name, length) != length){
-                fprintf(stderr, "Server: Failed to read client name from register message\n");
-                exit(EXIT_FAILURE);
-            }
             pthread_mutex_lock(&mutex);
-            handle_register(fd, client_name);
+            handle_register(fd, msg, addr, len);
             pthread_mutex_unlock(&mutex);
             break;
         case UNREGISTER: // it's only because when client is shutting down without unregistering, it sends wrong message and crashes server
-            if (read(fd, client_name, length) != length){
-                fprintf(stderr, "Server: Failed to read client name from register message\n");
-                exit(EXIT_FAILURE);
-            }
             pthread_mutex_lock(&mutex);
-            handle_unregister(fd, client_name);
+            handle_unregister(fd, msg.client_name);
             pthread_mutex_unlock(&mutex);
             break;
         case RESULT:
             pthread_mutex_lock(&mutex);
-            if (read(fd, client_name, length) != length){
-                fprintf(stderr, "Server: Failed to read client name from register message\n");
-                exit(EXIT_FAILURE);
-            }
-            int i = check_exist(client_name);
+            int i = check_exist(msg.client_name);
             clients[i].reserved --;
             clients[i].ping = 0;
-            char buffer[MAX_SIZE];
-            int res_len;
-            if (read(fd, &res_len, sizeof(int)) != sizeof(int)) {
-                fprintf(stderr, "Server: Failed to read result size\n");
-                exit(EXIT_FAILURE);
-            }
 
-            if (read(fd, buffer, res_len) < 0) {
-                fprintf(stderr, "Server: Failed to read result message\n");
-                exit(EXIT_FAILURE);
-            }
-            printf("Server: Received from `%s`\n%s", client_name, buffer);
+            printf("Server: Received from `%s`\n%s", msg.client_name, msg.content);
 
             pthread_mutex_unlock(&mutex);
             break;
         case PONG:
             pthread_mutex_lock(&mutex);
-            if (read(fd, client_name, length) != length){
-                fprintf(stderr, "Server: Failed to read client name from register message\n");
-                exit(EXIT_FAILURE);
-            }
-            int index = check_exist(client_name);
+            int index = check_exist(msg.client_name);
             clients[index].ping = 0;
             pthread_mutex_unlock(&mutex);
         default:
@@ -410,33 +331,37 @@ void handle_response(int fd){
     }
 }
 
-void handle_register(int fd, char* client_name){
+void handle_register(int fd, struct message msg, struct sockaddr *sockaddr, socklen_t socklen){
     uint8_t message_type;
     if (curr_clients == MAX_CLIENTS) { // max clients exceeded
         message_type = CLIENTSEXCEED;
-        if (write(fd, &message_type, 1) != 1){
+        if (sendto(fd, &message_type, 1, 0, sockaddr, socklen) != 1){
             fprintf(stderr, "Server: Failed to send `CLIENTSEXCEED` message to client\n");
             exit(EXIT_FAILURE);
         }
         clear_poll(fd);
-    } else if (check_exist(client_name) >= 0) { // client_name already exists
+    } else if (check_exist(msg.client_name) >= 0) { // client_name already exists
             message_type = NAMETAKEN;
-            if (write(fd, &message_type, 1) != 1){
+            if (sendto(fd, &message_type, 1, 0, sockaddr, socklen) != 1){
                 fprintf(stderr, "Server: Failed to send `NAMETAKEN` message to client\n");
                 exit(EXIT_FAILURE);
             }
             clear_poll(fd);
         } else { // all ok
-            printf("Server: registering client %s\n", client_name);
+            printf("Server: registering client %s\n", msg.client_name);
             clients[curr_clients].client_fd = fd;
             clients[curr_clients].reserved = 0;
             clients[curr_clients].ping = 0;
-            strcpy(clients[curr_clients++].client_name, client_name);
+            strcpy(clients[curr_clients].client_name, msg.client_name);
+            clients[curr_clients].socklen = socklen;
+            clients[curr_clients].sockaddr = calloc(1,socklen);
+            memcpy(clients[curr_clients].sockaddr, sockaddr, socklen);
             message_type = OK;
-            if (write(fd, &message_type, 1) != 1){
+            curr_clients++;
+            if (sendto(fd, &message_type, 1, 0, sockaddr, socklen) != 1){
                 fprintf(stderr, "Server: Failed to send `OK` message to client\n");
                 exit(EXIT_FAILURE);
-        }
+            }
     }
 }
 
@@ -457,10 +382,6 @@ void clear_poll(int fd){
         exit(EXIT_FAILURE);
     }
 
-    if (shutdown(fd, SHUT_RDWR) == -1){
-        fprintf(stderr, "Server: Failed to shutdown client's socket\n");
-        exit(EXIT_FAILURE);
-    }
 
     if (close(fd) == -1){
         fprintf(stderr, "Server: Failed to close client's socket\n");
@@ -474,5 +395,5 @@ int check_exist(char* client_name){
             return i;
         }
     }
-    return 0;
+    return -1;
 }
